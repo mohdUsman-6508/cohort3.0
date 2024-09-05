@@ -6,5 +6,9 @@
   {
     "text": "do breakfast",
     "done": false
+  },
+  {
+    "text": "study for gate",
+    "done": false
   }
 ]

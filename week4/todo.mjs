@@ -1,5 +1,5 @@
 import { Command } from "commander";
-import fs, { read } from "fs";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -23,7 +23,7 @@ function writeTodos(todos) {
 
 program
   .name("TODO CLI")
-  .description("A simple file based todo")
+  .description("A simple file based todo cli")
   .version("1.0.0");
 
 program
