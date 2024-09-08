@@ -1,19 +1,47 @@
 import express from "express";
 import bodyParser from "body-parser";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = new express();
 const port = 4000;
+let index = Math.round(Math.random() * 10000);
 
 app.use(bodyParser.json()); //without this I was getting req.body undefined
 
+// for the file path
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const filePath = path.join(__dirname, "todos.json");
+
+///////////////////
+
+// routes //
 app.get("/", working);
 app.post("/api/todo/create", createTodo);
 app.get("/api/todo/get", getTodos);
 app.put("/api/todo/update", updateTodos);
 app.delete("/api/todo/delete", deleteTodos);
 
-let todos = [{ id: 1, text: "hit that wall", done: false }];
-let index = 1;
+////////////////
+
+// file base //
+
+if (!fs.existsSync(filePath)) {
+  fs.writeFileSync(filePath, JSON.stringify([]));
+}
+
+function readTodos() {
+  const data = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(data);
+}
+
+function writeTodos(todos) {
+  fs.writeFileSync(filePath, JSON.stringify(todos, null, 2));
+}
+
+// ///////// //
 
 // /////////////////////////////// functions ///////////////////////////////////// //
 
@@ -26,7 +54,6 @@ function working(req, res) {
 
 function createTodo(req, res) {
   const data = req.body;
-
   if (!data) {
     res.status(404).json({
       success: false,
@@ -36,8 +63,10 @@ function createTodo(req, res) {
   }
   index++;
   const newTodo = { id: index, text: data.text, done: data.done };
+  const todos = readTodos();
   todos.push(newTodo);
-  console.log(todos);
+  writeTodos(todos);
+
   res.status(200).json({
     success: true,
     message: "todo is created successfully.",
@@ -46,12 +75,14 @@ function createTodo(req, res) {
 }
 
 function getTodos(req, res) {
+  let todos = readTodos();
   if (todos.length == 0) {
     res.status(200).json({
       message: "Todo list is empty!",
     });
     return;
   }
+
   res.status(200).json({
     success: true,
     message: "List of todos",
@@ -68,16 +99,20 @@ function updateTodos(req, res) {
     });
     return;
   }
+  let todos = readTodos();
   let updatedTodo = {};
-  let i = 0;
-  for (; i < todos.length; i++) {
+  let flag = false;
+
+  for (let i = 0; i < todos.length; i++) {
     if (todos[i].id == data.id) {
+      flag = true;
       updatedTodo = { id: data.id, text: data.text, done: data.done };
       todos[i] = updatedTodo;
       break;
     }
   }
-  if (i == todos.length) {
+  writeTodos(todos);
+  if (!flag) {
     res.status(404).json({
       success: false,
       message: "todo is not found",
@@ -94,6 +129,7 @@ function updateTodos(req, res) {
 
 function deleteTodos(req, res) {
   let { id } = req.body;
+  let todos = readTodos();
   if (!id) {
     res.status(404).json({
       message: "Fields may be empty!",
@@ -108,7 +144,7 @@ function deleteTodos(req, res) {
   }
 
   let flag = true;
-  for (; i < todos.length; i++) {
+  for (let i = 0; i < todos.length; i++) {
     if (id == todos[i].id) {
       flag = false;
       todos.splice(i, 1);
@@ -122,7 +158,7 @@ function deleteTodos(req, res) {
     });
     return;
   }
-
+  writeTodos(todos);
   res.status(200).json({
     success: true,
     message: "todo is deleted successfully",

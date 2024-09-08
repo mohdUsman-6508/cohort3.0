@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "text": "go to gym",
+    "done": false
+  },
+  {
+    "id": 3,
+    "text": "make file based todo",
+    "done": true
+  },
+
+  {
+    "id": 31244248,
+    "text": "watch a gate lecture",
+    "done": false
+  }
+]
