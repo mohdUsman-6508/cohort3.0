@@ -1,0 +1,39 @@
+# Node.js specific files and folders
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Environment variable files
+.env
+.env.local
+.env.*.local
+
+# Coverage files
+coverage/
+
+# Temporary folders and files
+tmp/
+temp/
+
+# IDE specific
+.idea/
+.vscode/
+*.sublime-workspace
+
+# Build output
+dist/
+build/
+out/
